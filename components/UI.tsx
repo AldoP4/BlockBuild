@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ToolMode } from '../types';
 import { LEGO_COLORS } from '../constants';
-import { Trash2, PaintBucket, Box, Sparkles, Loader2 } from 'lucide-react';
+import { Trash2, PaintBucket, Box, Sparkles, Loader2, Info, X, Cpu, Palette, Cuboid } from 'lucide-react';
 
 interface UIProps {
   toolMode: ToolMode;
@@ -27,6 +27,7 @@ const UI: React.FC<UIProps> = ({
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [challenge, setChallenge] = useState<string | null>(null);
+  const [showInfo, setShowInfo] = useState(false);
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
@@ -55,11 +56,20 @@ const UI: React.FC<UIProps> = ({
       {/* Top Bar: Header & AI Tools */}
       <div className="pointer-events-auto flex flex-col md:flex-row gap-4 items-start justify-between bg-black/50 p-4 rounded-xl backdrop-blur-md border border-white/10 shadow-xl">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Box className="text-yellow-400" fill="currentColor" />
-            Constructor Bloques
-          </h1>
-          <p className="text-gray-400 text-sm">Bloques: {blockCount}</p>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+              <Box className="text-yellow-400" fill="currentColor" />
+              Constructor AI
+            </h1>
+            <button 
+              onClick={() => setShowInfo(true)}
+              className="text-gray-400 hover:text-white transition-colors"
+              title="Ver Tech Stack"
+            >
+              <Info size={20} />
+            </button>
+          </div>
+          <p className="text-gray-400 text-sm">Bloques: {blockCount} | Modelo: Gemini 3 Pro</p>
         </div>
 
         <div className="flex flex-col gap-2 w-full md:w-auto">
@@ -68,7 +78,7 @@ const UI: React.FC<UIProps> = ({
               type="text" 
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Ej: una casa pequeña..."
+              placeholder="Ej: nave espacial gigante..."
               className="bg-gray-800 text-white px-3 py-2 rounded-lg text-sm border border-gray-700 focus:border-blue-500 outline-none w-full md:w-64"
             />
             <button 
@@ -97,6 +107,61 @@ const UI: React.FC<UIProps> = ({
         </div>
       </div>
 
+      {/* Tech Stack Info Modal */}
+      {showInfo && (
+        <div className="fixed inset-0 bg-black/80 pointer-events-auto flex items-center justify-center z-50 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-gray-900 p-6 rounded-2xl border border-white/10 max-w-md w-full shadow-2xl relative mx-4">
+            <button 
+              onClick={() => setShowInfo(false)} 
+              className="absolute top-4 right-4 text-gray-400 hover:text-white"
+            >
+              <X />
+            </button>
+            
+            <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+              <Cpu className="text-blue-500" />
+              Tech Stack
+            </h2>
+            
+            <div className="space-y-4">
+              <div className="flex gap-3 items-start">
+                <div className="bg-blue-500/20 p-2 rounded-lg text-blue-400">
+                   <Cuboid size={20} />
+                </div>
+                <div>
+                  <h3 className="text-white font-medium text-sm">3D Engine</h3>
+                  <p className="text-gray-400 text-xs">React Three Fiber, Three.js, Drei (Environment, Shadows)</p>
+                </div>
+              </div>
+
+              <div className="flex gap-3 items-start">
+                <div className="bg-purple-500/20 p-2 rounded-lg text-purple-400">
+                   <Sparkles size={20} />
+                </div>
+                <div>
+                  <h3 className="text-white font-medium text-sm">Artificial Intelligence</h3>
+                  <p className="text-gray-400 text-xs">Google Gemini 3 Pro (Reasoning), Gemini 2.5 Flash (Challenges)</p>
+                </div>
+              </div>
+
+              <div className="flex gap-3 items-start">
+                <div className="bg-pink-500/20 p-2 rounded-lg text-pink-400">
+                   <Palette size={20} />
+                </div>
+                <div>
+                  <h3 className="text-white font-medium text-sm">Frontend & Design</h3>
+                  <p className="text-gray-400 text-xs">React 18, TypeScript, Tailwind CSS, Lucide Icons</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-white/10 text-center">
+              <p className="text-gray-500 text-xs">Portfolio Project • Powered by Gemini API</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Bottom Bar: Tools & Colors */}
       <div className="pointer-events-auto flex flex-col gap-4 items-center">
         
@@ -105,7 +170,7 @@ const UI: React.FC<UIProps> = ({
            <button
             onClick={() => setToolMode(ToolMode.BUILD)}
             className={`p-3 rounded-full transition-all ${toolMode === ToolMode.BUILD ? 'bg-blue-600 text-white scale-110 shadow-lg' : 'text-gray-400 hover:text-white hover:bg-white/10'}`}
-            title="Construir"
+            title="Construir (Click en caras para añadir)"
           >
             <Box className="w-6 h-6" />
           </button>
