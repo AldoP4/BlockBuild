@@ -1,0 +1,5 @@
+{
+  "name": "Constructor de Bloques AI",
+  "description": "Un entorno de construcción estilo LEGO en 3D impulsado por React Three Fiber y Gemini AI para generar planos y retos.",
+  "requestFramePermissions": []
+}
